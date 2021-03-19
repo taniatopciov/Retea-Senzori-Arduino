@@ -8,6 +8,11 @@ SoilMoistureSensor::~SoilMoistureSensor()
 {
 }
 
+SensorTypes SoilMoistureSensor::GetType()
+{
+    return SOIL_MOISTURE_SENSOR;
+}
+
 float SoilMoistureSensor::ReadValue()
 {
     float result = 0;
