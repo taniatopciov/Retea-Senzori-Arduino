@@ -4,8 +4,9 @@
 enum SensorTypes
 {
     NO_TYPE = 0,
-    SOIL_MOISTURE_SENSOR,
     RAIN_SENSOR,
+    GAS_SENSOR,
+    SOIL_MOISTURE_SENSOR,
 };
 
 #endif

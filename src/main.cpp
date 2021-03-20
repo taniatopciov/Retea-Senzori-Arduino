@@ -1,15 +1,16 @@
 #include <Arduino.h>
 
 #include "Bluetooth/BTCommunicationProtocol.h"
-
 #include "Sensor/ISensor.h"
-// #include "Sensor/SoilMoistureSensor.h"
 #include "Sensor/RainSensor.h"
+#include "Sensor/GasSensor.h"
+// #include "Sensor/SoilMoistureSensor.h"
 
-RainSensor rainSensor1(A0, 8);
-RainSensor rainSensor2(A0, 8);
+// SoilMoistureSensor soilMoistureSensor(A0);
+RainSensor rainSensor(A0, 8);
+GasSensor gasSensor(A1);
 
-BTCommunicationProtocol BTCommunication(3, 2, &rainSensor1, &rainSensor2);
+BTCommunicationProtocol BTCommunication(3, 2, &rainSensor, &gasSensor);
 
 void setup()
 {
