@@ -4,13 +4,17 @@
 #include "Sensor/ISensor.h"
 #include "Sensor/RainSensor.h"
 #include "Sensor/GasSensor.h"
-// #include "Sensor/SoilMoistureSensor.h"
+#include "Sensor/LightSensor.h"
+#include "Sensor/TempSensor.h"
+#include "Sensor/SoilMoistureSensor.h"
 
 // SoilMoistureSensor soilMoistureSensor(A0);
-RainSensor rainSensor(A0, 8);
-GasSensor gasSensor(A1);
+//RainSensor rainSensor(A0, 8);
+//GasSensor gasSensor(A1);
+LightSensor lightSensor(A0);
+TempSensor tempSensor(2);
 
-BTCommunicationProtocol BTCommunication(3, 2, &rainSensor, &gasSensor);
+BTCommunicationProtocol BTCommunication(4, 3, &lightSensor, &tempSensor);
 
 void setup()
 {
@@ -20,5 +24,8 @@ void setup()
 
 void loop()
 {
+	//Serial.println(lightSensor.ReadValue());
+	//Serial.println(tempSensor.ReadValue());
+	//delay(3000);
 	BTCommunication.Run();
 }
