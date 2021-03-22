@@ -7,6 +7,8 @@ enum SensorTypes
     RAIN_SENSOR,
     GAS_SENSOR,
     SOIL_MOISTURE_SENSOR,
+    LIGHT_SENSOR,
+    TEMP_SENSOR,
 };
 
 #endif
