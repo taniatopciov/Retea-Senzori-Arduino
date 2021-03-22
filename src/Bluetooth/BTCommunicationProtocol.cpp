@@ -84,13 +84,16 @@ void BTCommunicationProtocol::StateMachineRun()
     case WAITING_FOR_SAMPLE_COUNT:
     {
         sampleCountPerSensor = 0;
+        int value;
         while (HasData())
         {
+            value = BTSerial.read();
             lastMillis = currentMillis;
 
-            if (sampleCountPerSensor != 0)
+            if (sampleCountPerSensor == 0)
             {
-                sampleCountPerSensor = BTSerial.read();
+                Serial.println(value);
+                sampleCountPerSensor = value;
             }
             protocolState_en = SEND_SAMPLES;
         }

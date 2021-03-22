@@ -27,6 +27,6 @@ float TempSensor::ReadValue()
     dht.begin();
     sensors_event_t event;
     dht.humidity().getEvent(&event);
-    if (event.temperature > 0 && event.temperature < 50)
-        return event.temperature;
+    // if (event.temperature > 0 && event.temperature < 50)
+    return event.temperature;
 }

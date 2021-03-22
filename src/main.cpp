@@ -14,18 +14,18 @@
 LightSensor lightSensor(A0);
 TempSensor tempSensor(2);
 
-//BTCommunicationProtocol BTCommunication(3, 2, &rainSensor, &gasSensor);
+BTCommunicationProtocol BTCommunication(4, 3, &lightSensor, &tempSensor);
 
 void setup()
 {
 	Serial.begin(9600);
-	//BTCommunication.Begin(9600);
+	BTCommunication.Begin(9600);
 }
 
 void loop()
 {
-	Serial.println(lightSensor.ReadValue());
-	Serial.println(tempSensor.ReadValue());
-	delay(3000);
-	//BTCommunication.Run();
+	//Serial.println(lightSensor.ReadValue());
+	//Serial.println(tempSensor.ReadValue());
+	//delay(3000);
+	BTCommunication.Run();
 }
