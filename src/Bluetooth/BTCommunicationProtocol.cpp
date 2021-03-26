@@ -1,11 +1,20 @@
 #include "BTCommunicationProtocol.h"
 #include <string.h>
+#include "NodeManager/NodeManager.h"
+#include "Sensor/SensorTypes.h"
+#include "Sensor/SensorData.h"
 
-BTCommunicationProtocol::BTCommunicationProtocol(int BTTransmitPin, int BTReceivePin, ISensor *sensor1, ISensor *sensor2)
-    : BTSerial(BTReceivePin, BTTransmitPin, 0)
+static char ConnectString[] = "CONN";
+static char DisconnectString[] = "STOP";
+static char RequestDataString[] = "RQDT";
+static char RequestSensorTypesString[] = "RQST";
+static char SendSensorTypeString[] = "STYP";
+static char DataPacketString[] = "DATA";
+static char StartSendingDataString[] = "STSD";
+static char StopSendingDataString[] = "SPSD";
+
+BTCommunicationProtocol::BTCommunicationProtocol(int BTTransmitPin, int BTReceivePin) : BTSerial(BTReceivePin, BTTransmitPin, 0)
 {
-    this->sensor1 = sensor1;
-    this->sensor2 = sensor2;
     Reset();
 }
 
@@ -17,6 +26,7 @@ void BTCommunicationProtocol::Reset()
 {
     protocolState_en = WAITING_FOR_MESSAGE;
     currentTextBufferIndex = 0;
+    g_NodeManager.GoToSleep();
 }
 
 void BTCommunicationProtocol::Begin(long baudrate)
@@ -46,8 +56,6 @@ void BTCommunicationProtocol::StateMachineRun()
         while (HasData())
         {
             lastMillis = currentMillis;
-
-            lastMillis = currentMillis;
             textBuffer[currentTextBufferIndex++] = (char)BTSerial.read();
 
             if (currentTextBufferIndex == TEXT_BUFFER_SIZE)
@@ -55,83 +63,72 @@ void BTCommunicationProtocol::StateMachineRun()
                 textBuffer[currentTextBufferIndex] = '\0';
                 currentTextBufferIndex = 0;
 
-                if (strcmp(textBuffer, "CONN") == 0)
+                if (strcmp(textBuffer, ConnectString) == 0)
                 {
-                    protocolState_en = SEND_SENSOR_TYPES;
+                    g_NodeManager.WakeUp();
                 }
-                else if (strcmp(textBuffer, "MORE") == 0)
+                else if (strcmp(textBuffer, DisconnectString) == 0)
                 {
-                    protocolState_en = WAITING_FOR_SAMPLE_COUNT;
+                    Reset();
+                }
+                else if (strcmp(textBuffer, RequestDataString) == 0)
+                {
+                    protocolState_en = SENDING_DATA;
+                }
+                else if (strcmp(textBuffer, RequestSensorTypesString) == 0)
+                {
+                    protocolState_en = SENDING_SENSOR_TYPES;
                 }
                 else
                 {
-                    Reset();
+                    protocolState_en = WAITING_FOR_MESSAGE;
                 }
             }
         }
     };
     break;
 
-    case SEND_SENSOR_TYPES:
+    case SENDING_SENSOR_TYPES:
     {
         lastMillis = currentMillis;
 
-        SendSensorTypes();
-        protocolState_en = WAITING_FOR_SAMPLE_COUNT;
+        SensorTypes sensorTypes[2];
+        g_NodeManager.GetSensorTypes(sensorTypes);
+
+        char type[] = "0";
+        for (int i = 0; i < 2; i++)
+        {
+            if (sensorTypes[i] == NO_TYPE)
+            {
+                continue;
+            }
+            SendString(SendSensorTypeString);
+            type[0] += sensorTypes[i];
+            SendString(type);
+        }
+
+        protocolState_en = WAITING_FOR_MESSAGE;
     }
     break;
 
-    case WAITING_FOR_SAMPLE_COUNT:
+    case SENDING_DATA:
     {
-        sampleCountPerSensor = 0;
-        int value;
-        while (HasData())
+        lastMillis = currentMillis;
+
+        SendString(StartSendingDataString);
+
+        g_NodeManager.StartDataReplay();
+
+        SensorData sensorData;
+
+        while (g_NodeManager.HasNextLog())
         {
-            value = BTSerial.read();
-            lastMillis = currentMillis;
-
-            if (sampleCountPerSensor == 0)
-            {
-                Serial.println(value);
-                sampleCountPerSensor = value;
-            }
-            protocolState_en = SEND_SAMPLES;
-        }
-    }
-    break;
-
-    case SEND_SAMPLES:
-    {
-        while (sampleCountPerSensor > 0)
-        {
-            lastMillis = currentMillis;
-
-            // convert float to long
-            // send bytes starting with LSB
-
-            if (sensor1 != NULL)
-            {
-                float value = sensor1->ReadValue();
-                long copyValue = *(long *)&value;
-                for (unsigned int i = 0; i < sizeof(long); i++)
-                {
-                    BTSerial.write((copyValue >> (i * 8)) & 255);
-                }
-            }
-
-            if (sensor2 != NULL)
-            {
-                float value = sensor2->ReadValue();
-                long copyValue = *(long *)&value;
-                for (unsigned int i = 0; i < sizeof(long); i++)
-                {
-                    BTSerial.write((copyValue >> (i * 8)) & 255);
-                }
-            }
-
-            sampleCountPerSensor--;
+            g_NodeManager.ReadSensorData(&sensorData);
+            SendString(DataPacketString);
+            SendBytes(&sensorData, sizeof(SensorData));
         }
 
+        SendString(StopSendingDataString);
         protocolState_en = WAITING_FOR_MESSAGE;
     }
     break;
@@ -143,20 +140,23 @@ bool BTCommunicationProtocol::HasData()
     return BTSerial.available();
 }
 
-void BTCommunicationProtocol::SendSensorTypes()
+void BTCommunicationProtocol::SendString(char *str)
 {
-    if (sensor1 == NULL && sensor2 == NULL)
+    int size = strlen(str);
+    for (int i = 0; i < size; i++)
     {
-        Reset();
+        BTSerial.write(str[i]);
     }
+}
 
-    if (sensor1 != NULL)
-    {
-        BTSerial.write(sensor1->GetType());
-    }
+void BTCommunicationProtocol::SendBytes(void *memoryLocation_ptr, size_t memoryLocationSize)
+{
+    void *memoryLocationCurrent_ptr = memoryLocation_ptr;
+    char *currentByte = NULL;
 
-    if (sensor2 != NULL)
+    for (size_t i = 0; i < memoryLocationSize; i++)
     {
-        BTSerial.write(sensor2->GetType());
+        currentByte = (char *)memoryLocationCurrent_ptr + i;
+        Serial.print(*currentByte);
     }
 }

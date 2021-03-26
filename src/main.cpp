@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "NodeManager/NodeManager.h"
 #include "Bluetooth/BTCommunicationProtocol.h"
 #include "Sensor/ISensor.h"
 #include "Sensor/RainSensor.h"
@@ -9,12 +10,13 @@
 #include "Sensor/SoilMoistureSensor.h"
 
 // SoilMoistureSensor soilMoistureSensor(A0);
-//RainSensor rainSensor(A0, 8);
-//GasSensor gasSensor(A1);
-LightSensor lightSensor(A0);
-TempSensor tempSensor(2);
+RainSensor rainSensor(A0, 8);
+GasSensor gasSensor(A1);
+// LightSensor lightSensor(A0);
+// TempSensor tempSensor(2);
 
-BTCommunicationProtocol BTCommunication(4, 3, &lightSensor, &tempSensor);
+NodeManager g_NodeManager(&rainSensor, &gasSensor);
+BTCommunicationProtocol BTCommunication(3, 2);
 
 void setup()
 {
