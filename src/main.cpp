@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "NodeManager/NodeManager.h"
 #include "Bluetooth/BTCommunicationProtocol.h"
 
 #include "Sensor/ISensor.h"
@@ -8,7 +9,8 @@
 SoilMoistureSensor soilMoistureSensor1(A0);
 SoilMoistureSensor soilMoistureSensor2(A0);
 
-BTCommunicationProtocol BTCommunication(3, 2, &soilMoistureSensor1, &soilMoistureSensor2);
+NodeManager g_NodeManager(&soilMoistureSensor1, &soilMoistureSensor2);
+BTCommunicationProtocol BTCommunication(3, 2);
 
 void setup()
 {

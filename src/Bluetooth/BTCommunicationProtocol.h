@@ -11,15 +11,14 @@
 enum BTProtocolState
 {
     WAITING_FOR_MESSAGE = 0,
-    SEND_SENSOR_TYPES,
-    WAITING_FOR_SAMPLE_COUNT,
-    SEND_SAMPLES
+    SENDING_SENSOR_TYPES,
+    SENDING_DATA
 };
 
 class BTCommunicationProtocol
 {
 public:
-    BTCommunicationProtocol(int BTTransmitPin, int BTReceivePin, ISensor *sensor1, ISensor *sensor2);
+    BTCommunicationProtocol(int BTTransmitPin, int BTReceivePin);
     ~BTCommunicationProtocol();
 
     void Reset();
@@ -28,18 +27,15 @@ public:
 
 private:
     void StateMachineRun();
-    void SendSensorTypes();
     bool HasData();
-
-    int sampleCountPerSensor;
+    void SendString(char *str);
+    void SendBytes(void *memoryLocation_ptr, size_t memoryLocationSize);
 
     long currentMillis;
     long lastMillis;
 
     SoftwareSerial BTSerial;
     BTProtocolState protocolState_en;
-    ISensor *sensor1;
-    ISensor *sensor2;
     char textBuffer[TEXT_BUFFER_SIZE + 1];
     int currentTextBufferIndex;
 };

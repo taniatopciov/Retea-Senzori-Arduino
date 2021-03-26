@@ -1,0 +1,22 @@
+Bluetooth Classic (SPP)
+
+Commands
+
+│   │ Command String │ Argument    │ Command Type │ Description                            │ Size in Bytes │
+├───┼────────────────┼─────────────┼──────────────┼────────────────────────────────────────┼───────────────┤
+│ A │ CONN           │ -           │ Input        │ Used To Start A Connnection            │ 4             │
+│ B │ STOP           │ -           │ Input        │ Disconnect - Reset the state machine   │ 4             │
+│ C │ RQDT           │ -           │ Input        │ Request Data                           │ 4             │
+│ D │ RQST           │ -           │ Input        │ Request Sensor Types                   │ 4             │
+│ E │ STYP           │ Sensor Type │ Output       │ Send a Sensor Type to The Smart Phone  │ 4 + 2         │
+│ F │ DATA           │ Sensor Data │ Output       │ Data packet                            │ 4 + 10        │
+│ G │ STSD           │ -           │ Output       │ Start Sending Data                     │ 4             │
+│ H │ SPSD           │ -           │ Output       │ Stop Sending Data                      │ 4             │
+
+Data packet
+
+Sensor Type - 2 B
+Sensor Value - 4 B
+Time - 4 B
+
+Total Data packet Size = 10 B
