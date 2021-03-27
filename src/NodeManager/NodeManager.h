@@ -18,7 +18,7 @@ public:
 
     void StartDataReplay();
     bool HasNextLog();
-    void ReadSensorData(SensorData *data_ptr);
+    void ReadSensorDataFromLog(SensorData *data_ptr);
 
 private:
     ISensor *sensor1;

@@ -53,6 +53,7 @@ void BTCommunicationProtocol::StateMachineRun()
     {
     case WAITING_FOR_MESSAGE:
     {
+        currentTextBufferIndex = 0;
         while (HasData())
         {
             lastMillis = currentMillis;
@@ -84,6 +85,12 @@ void BTCommunicationProtocol::StateMachineRun()
                     protocolState_en = WAITING_FOR_MESSAGE;
                 }
             }
+
+            // Remove End Of Line
+            // while (HasData())
+            // {
+            //     BTSerial.read();
+            // }
         }
     };
     break;
@@ -104,7 +111,9 @@ void BTCommunicationProtocol::StateMachineRun()
             }
             SendString(SendSensorTypeString);
             type[0] += sensorTypes[i];
+
             SendString(type);
+            type[0] = '0';
         }
 
         protocolState_en = WAITING_FOR_MESSAGE;
@@ -123,7 +132,7 @@ void BTCommunicationProtocol::StateMachineRun()
 
         while (g_NodeManager.HasNextLog())
         {
-            g_NodeManager.ReadSensorData(&sensorData);
+            g_NodeManager.ReadSensorDataFromLog(&sensorData);
             SendString(DataPacketString);
             SendBytes(&sensorData, sizeof(SensorData));
         }
@@ -157,6 +166,6 @@ void BTCommunicationProtocol::SendBytes(void *memoryLocation_ptr, size_t memoryL
     for (size_t i = 0; i < memoryLocationSize; i++)
     {
         currentByte = (char *)memoryLocationCurrent_ptr + i;
-        Serial.print(*currentByte);
+        BTSerial.write(*currentByte);
     }
 }

@@ -28,11 +28,13 @@ bool NodeManager::HasNextLog()
     return currentValue != 2;
 }
 
-void NodeManager::ReadSensorData(SensorData *data_ptr)
+void NodeManager::ReadSensorDataFromLog(SensorData *data_ptr)
 {
     data_ptr->sensorType_en = (SensorTypes)(currentValue + 1);
     data_ptr->sensorValue = 2.0f;
     data_ptr->time = 0;
+
+    currentValue++;
 }
 
 void NodeManager::GetSensorTypes(SensorTypes sensorTypes[2])
