@@ -3,11 +3,15 @@
 
 #include "SensorTypes.h"
 
-struct SensorData
+union SensorData
 {
-    SensorTypes sensorType_en;
-    float sensorValue;
-    long time;
+    struct Data
+    {
+        SensorTypes sensorType_en;
+        float sensorValue;
+        long time;
+    } data;
+    char rawBytes[sizeof(Data)];
 };
 
 #endif // SENSOR_DATA_H

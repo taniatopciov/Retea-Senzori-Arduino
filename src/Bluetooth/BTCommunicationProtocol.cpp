@@ -85,12 +85,6 @@ void BTCommunicationProtocol::StateMachineRun()
                     protocolState_en = WAITING_FOR_MESSAGE;
                 }
             }
-
-            // Remove End Of Line
-            // while (HasData())
-            // {
-            //     BTSerial.read();
-            // }
         }
     };
     break;
@@ -102,20 +96,18 @@ void BTCommunicationProtocol::StateMachineRun()
         SensorTypes sensorTypes[2];
         g_NodeManager.GetSensorTypes(sensorTypes);
 
-        char type[] = "0";
+        char type[1];
+
         for (int i = 0; i < 2; i++)
         {
             if (sensorTypes[i] == NO_TYPE)
             {
                 continue;
             }
+            type[0] = (char)sensorTypes[i];
             SendString(SendSensorTypeString);
-            type[0] += sensorTypes[i];
-
-            SendString(type);
-            type[0] = '0';
+            SendBytes(type, 1);
         }
-
         protocolState_en = WAITING_FOR_MESSAGE;
     }
     break;
@@ -134,7 +126,7 @@ void BTCommunicationProtocol::StateMachineRun()
         {
             g_NodeManager.ReadSensorDataFromLog(&sensorData);
             SendString(DataPacketString);
-            SendBytes(&sensorData, sizeof(SensorData));
+            SendBytes(sensorData.rawBytes, sizeof(sensorData.rawBytes));
         }
 
         SendString(StopSendingDataString);
@@ -152,20 +144,11 @@ bool BTCommunicationProtocol::HasData()
 void BTCommunicationProtocol::SendString(char *str)
 {
     int size = strlen(str);
-    for (int i = 0; i < size; i++)
-    {
-        BTSerial.write(str[i]);
-    }
+    Serial.println(str);
+    SendBytes(str, size);
 }
 
-void BTCommunicationProtocol::SendBytes(void *memoryLocation_ptr, size_t memoryLocationSize)
+void BTCommunicationProtocol::SendBytes(char bytes[], size_t size)
 {
-    void *memoryLocationCurrent_ptr = memoryLocation_ptr;
-    char *currentByte = NULL;
-
-    for (size_t i = 0; i < memoryLocationSize; i++)
-    {
-        currentByte = (char *)memoryLocationCurrent_ptr + i;
-        BTSerial.write(*currentByte);
-    }
+    BTSerial.write(bytes, size);
 }

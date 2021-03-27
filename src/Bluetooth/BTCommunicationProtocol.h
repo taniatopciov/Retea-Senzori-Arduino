@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include "SoftwareSerial.h"
 #include "Sensor/ISensor.h"
+#include "Sensor/SensorData.h"
 
 #define TEXT_BUFFER_SIZE 4
 #define READ_TIMEOUT 8000
@@ -29,7 +30,7 @@ private:
     void StateMachineRun();
     bool HasData();
     void SendString(char *str);
-    void SendBytes(void *memoryLocation_ptr, size_t memoryLocationSize);
+    void SendBytes(char bytes[], size_t size);
 
     long currentMillis;
     long lastMillis;

@@ -30,9 +30,9 @@ bool NodeManager::HasNextLog()
 
 void NodeManager::ReadSensorDataFromLog(SensorData *data_ptr)
 {
-    data_ptr->sensorType_en = (SensorTypes)(currentValue + 1);
-    data_ptr->sensorValue = 2.0f;
-    data_ptr->time = 0;
+    data_ptr->data.sensorType_en = (SensorTypes)(currentValue + 1);
+    data_ptr->data.sensorValue = 2.0f;
+    data_ptr->data.time = 0x02FA;
 
     currentValue++;
 }
