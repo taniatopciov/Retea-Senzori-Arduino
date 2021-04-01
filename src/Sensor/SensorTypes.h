@@ -9,6 +9,7 @@ enum SensorTypes
     SOIL_MOISTURE_SENSOR,
     LIGHT_SENSOR,
     TEMP_SENSOR,
+    SIMPLE_TEMP_SENSOR
 };
 
 #endif
