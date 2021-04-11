@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include "NodeManager/NodeManager.h"
+#include "NodeManager/SDCardManager.h"
 #include "Bluetooth/BTCommunicationProtocol.h"
 #include "Sensor/ISensor.h"
 #include "Sensor/RainSensor.h"
@@ -16,18 +17,20 @@ GasSensor gasSensor(A1);
 // TempSensor tempSensor(2);
 
 NodeManager g_NodeManager(&rainSensor, &gasSensor);
-BTCommunicationProtocol BTCommunication(3, 2);
+SDCardManager g_SDCardManager;
+BTCommunicationProtocol g_BTCommunicationProtocol(3, 2);
 
 void setup()
 {
 	Serial.begin(9600);
-	BTCommunication.Begin(9600);
+	g_BTCommunicationProtocol.Begin(9600);
+
+	g_NodeManager.Start();
 }
 
 void loop()
 {
-	//Serial.println(lightSensor.ReadValue());
-	//Serial.println(tempSensor.ReadValue());
 	//delay(3000);
-	BTCommunication.Run();
+	g_NodeManager.Tick();
+	g_BTCommunicationProtocol.Tick();
 }

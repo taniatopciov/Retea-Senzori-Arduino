@@ -2,21 +2,29 @@ Bluetooth Classic (SPP)
 
 Commands
 
-│   │ Command String │ Argument    │ Command Type │ Description                            │ Size in Bytes │
-├───┼────────────────┼─────────────┼──────────────┼────────────────────────────────────────┼───────────────┤
-│ A │ CONN           │ -           │ Input        │ Used To Start A Connnection            │ 4             │
-│ B │ STOP           │ -           │ Input        │ Disconnect - Reset the state machine   │ 4             │
-│ C │ RQDT           │ -           │ Input        │ Request Data                           │ 4             │
-│ D │ RQST           │ -           │ Input        │ Request Sensor Types                   │ 4             │
-│ E │ STYP           │ Sensor Type │ Output       │ Send a Sensor Type to The Smart Phone  │ 4 + 2         │
-│ F │ DATA           │ Sensor Data │ Output       │ Data packet                            │ 4 + 10        │
-│ G │ STSD           │ -           │ Output       │ Start Sending Data                     │ 4             │
-│ H │ SPSD           │ -           │ Output       │ Stop Sending Data                      │ 4             │
+│   │ Command String │ Argument    │ Command Type │ Description                                 │ Size in Bytes │
+├───┼────────────────┼─────────────┼──────────────┼─────────────────────────────────────────────┼───────────────┤
+│ A │ CONN           │ -           │ Input        │ Used To Start A Connnection                 │ 4             │
+│ B │ KILL           │ -           │ Input        │ Stop Current Task and Go To Sleep           │ 4             │
+│ C │ STOP           │ -           │ Input        │ Reset the State Machine                     │ 4             │
+│ D │ LIVE           │ -           │ Input        │ Request Live Data Transmission              │ 4             │
+│ E │ RQSC           │ -           │ Input        │ Request Sensor Count                        │ 4             │
+│ F │ SCNT           │ Sensor Count│ Output       │ Send Connected Sensor Count                 │ 4 + 1         │
+│ G │ RQST           │ -           │ Input        │ Request Sensor Types                        │ 4             │
+│ H │ STYP           │ Sensor Type │ Output       │ Send a Sensor Type                          │ 4 + 1         │
+│ I │ DATA           │ Sensor Data │ Output       │ Log Data packet                             │ 4 + 16        │
+│ J │ PLAY           │ -           │ Input        │ Replay All Data From All Logs               │ 4             │
+│ K │ RQDT           │ -           │ Input        │ Replay Data From Current Log File           │ 4             │
+│ L │ OPEN           │ -           │ Output       │ Sent when a Log File Has Opened             │ 4             │
+│ M │ CLOS           │ -           │ Output       │ Sent when a Log File Has Closed             │ 4             │
+│ N │ TIME           │ Unix Time   │ Input        │ Send Unix Time For Synchronisation          │ 4 + 8         │
+│ O │ SETI           │ Interval    │ Input        │ Time Interval For Saving to Log in Seconds  │ 4 + 4         │
+│ P │ SDER           │ Error Type  │ Output       │ SD Card Error Occured                       │ 4 + 1         │
 
-Data packet
+Log Data packet = 16 B
 
-Sensor Type - 2 B
+Log Type - 1 B
+Sensor Type - 1 B
+Batch Index - 2 B
 Sensor Value - 4 B
-Time - 4 B
-
-Total Data packet Size = 10 B
+Time - 8 B
