@@ -8,17 +8,22 @@
 #include "Sensor/GasSensor.h"
 #include "Sensor/LightSensor.h"
 #include "Sensor/TempSensor.h"
+#include "Sensor/SimpleTempSensor.h"
 #include "Sensor/SoilMoistureSensor.h"
 
-// SoilMoistureSensor soilMoistureSensor(A0);
-RainSensor rainSensor(A0, 8);
-GasSensor gasSensor(A1);
+//SoilMoistureSensor soilMoistureSensor(A0);
+//SimpleTempSensor simpleTempSensor(A1);
+
+//RainSensor rainSensor(A0, 8);
+//GasSensor gasSensor(A1);
+
 // LightSensor lightSensor(A0);
 // TempSensor tempSensor(2);
 
 NodeManager g_NodeManager(&rainSensor, &gasSensor);
 SDCardManager g_SDCardManager;
 BTCommunicationProtocol g_BTCommunicationProtocol(3, 2);
+
 
 void setup()
 {
@@ -30,7 +35,6 @@ void setup()
 
 void loop()
 {
-	//delay(3000);
 	g_NodeManager.Tick();
 	g_BTCommunicationProtocol.Tick();
 }
