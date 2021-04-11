@@ -1,7 +1,7 @@
 #ifndef SENSOR_TYPES_H
 #define SENSOR_TYPES_H
 
-enum SensorTypes
+enum SensorTypes : char
 {
     NO_TYPE = 0,
     RAIN_SENSOR,
