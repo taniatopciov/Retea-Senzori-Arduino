@@ -22,6 +22,7 @@ static char CloseLogFileString[] = "CLOS";
 static char SetUnixTimeString[] = "TIME";
 static char SetSaveToLogTimeIntervalString[] = "SETI";
 static char SDCardErrorString[] = "SDER";
+static char TimeoutOccuredString[] = "TOUT";
 
 BTCommunicationProtocol::BTCommunicationProtocol(int BTTransmitPin, int BTReceivePin) : BTSerial(BTReceivePin, BTTransmitPin, 0)
 {
@@ -36,6 +37,7 @@ BTCommunicationProtocol::~BTCommunicationProtocol()
 
 void BTCommunicationProtocol::Execute()
 {
+    SendString(TimeoutOccuredString);
     g_NodeManager.GoToSleep();
 }
 

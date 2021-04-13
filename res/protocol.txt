@@ -20,6 +20,7 @@ Commands
 │ N │ TIME           │ Unix Time   │ Input        │ Send Unix Time For Synchronisation          │ 4 + 8         │
 │ O │ SETI           │ Interval    │ Input        │ Time Interval For Saving to Log in Seconds  │ 4 + 4         │
 │ P │ SDER           │ Error Type  │ Output       │ SD Card Error Occured                       │ 4 + 1         │
+│ Q │ TOUT           │ -           │ Output       │ Message Sent when Timeout Occured           │ 4             │
 
 Log Data packet = 16 B
 

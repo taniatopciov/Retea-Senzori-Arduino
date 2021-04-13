@@ -14,8 +14,8 @@
 //SoilMoistureSensor soilMoistureSensor(A0);
 //SimpleTempSensor simpleTempSensor(A1);
 
-//RainSensor rainSensor(A0, 8);
-//GasSensor gasSensor(A1);
+RainSensor rainSensor(A0, 8);
+GasSensor gasSensor(A1);
 
 // LightSensor lightSensor(A0);
 // TempSensor tempSensor(2);
@@ -23,7 +23,6 @@
 NodeManager g_NodeManager(&rainSensor, &gasSensor);
 SDCardManager g_SDCardManager;
 BTCommunicationProtocol g_BTCommunicationProtocol(3, 2);
-
 
 void setup()
 {
