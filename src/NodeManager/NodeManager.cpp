@@ -191,7 +191,7 @@ void NodeManager::ReadLiveSensorData(SensorLogData *data_ptr, bool firstSensor_b
 {
     data_ptr->data.time_u64 = CalculateCurrentTime();
     data_ptr->data.batchIndex_u16 = configData_st.data.lastBatchIndex_u16;
-    data_ptr->data.logType = LOG_DATA;
+    data_ptr->data.logType = LOG_LIVE_DATA;
 
     if (firstSensor_b)
     {
@@ -200,6 +200,10 @@ void NodeManager::ReadLiveSensorData(SensorLogData *data_ptr, bool firstSensor_b
             data_ptr->data.sensorType_en = sensor1->GetType();
             data_ptr->data.sensorValue = sensor1->ReadValue();
         }
+        else
+        {
+            data_ptr->data.sensorType_en = NO_TYPE;
+        }
     }
     else
     {
@@ -207,6 +211,10 @@ void NodeManager::ReadLiveSensorData(SensorLogData *data_ptr, bool firstSensor_b
         {
             data_ptr->data.sensorType_en = sensor2->GetType();
             data_ptr->data.sensorValue = sensor2->ReadValue();
+        }
+        else
+        {
+            data_ptr->data.sensorType_en = NO_TYPE;
         }
     }
 }
@@ -228,6 +236,7 @@ bool NodeManager::ReadSensorDataFromLog(SensorLogData *data_ptr)
         currentBatchLogIndex_u16++;
         if (currentBatchLogIndex_u16 > configData_st.data.lastBatchIndex_u16)
         {
+            g_BTCommunicationProtocol.SendLogReplayDoneMsg();
             return false;
         }
 

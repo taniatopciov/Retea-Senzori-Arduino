@@ -10,6 +10,7 @@ enum LogType : char
     LOG_DATA,
     LOG_TIME_SET,
     LOG_ENDED,
+    LOG_LIVE_DATA,
 };
 
 union SensorLogData

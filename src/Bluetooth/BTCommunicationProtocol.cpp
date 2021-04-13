@@ -23,6 +23,7 @@ static char SetUnixTimeString[] = "TIME";
 static char SetSaveToLogTimeIntervalString[] = "SETI";
 static char SDCardErrorString[] = "SDER";
 static char TimeoutOccuredString[] = "TOUT";
+static char LogReplayDoneString[] = "DONE";
 
 BTCommunicationProtocol::BTCommunicationProtocol(int BTTransmitPin, int BTReceivePin) : BTSerial(BTReceivePin, BTTransmitPin, 0)
 {
@@ -73,6 +74,11 @@ void BTCommunicationProtocol::SendOpenFileMsg()
 void BTCommunicationProtocol::SendCloseFileMsg()
 {
     SendString(CloseLogFileString);
+}
+
+void BTCommunicationProtocol::SendLogReplayDoneMsg()
+{
+    SendString(LogReplayDoneString);
 }
 
 void BTCommunicationProtocol::StateMachineRun()

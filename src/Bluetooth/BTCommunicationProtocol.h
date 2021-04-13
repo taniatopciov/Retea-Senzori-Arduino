@@ -31,6 +31,7 @@ public:
     void SendSDCardError(SDCardErrors sdCardErrors_en);
     void SendOpenFileMsg();
     void SendCloseFileMsg();
+    void SendLogReplayDoneMsg();
 
 private:
     void StateMachineRun();
