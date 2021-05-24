@@ -14,7 +14,7 @@ void Task::Tick()
     milliseconds_u64 = millis();
     if (milliseconds_u64 - elapsedTime_u64 >= intervalTime_u64)
     {
-        elapsedTime_u64 = milliseconds_u64;
+        elapsedTime_u64 = (milliseconds_u64 / intervalTime_u64) * intervalTime_u64;
         Execute();
     }
 }

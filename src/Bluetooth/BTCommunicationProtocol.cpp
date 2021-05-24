@@ -113,7 +113,7 @@ void BTCommunicationProtocol::StateMachineRun()
 
             textBuffer[currentTextBufferIndex] = '\0';
             currentTextBufferIndex = 0;
-            // Serial.println(textBuffer);
+            Serial.println(textBuffer);
             if (strcmp(textBuffer, ConnectString) == 0)
             {
                 g_NodeManager.WakeUp();
@@ -170,29 +170,28 @@ void BTCommunicationProtocol::StateMachineRun()
             else if (strcmp(textBuffer, SetUnixTimeString) == 0)
             {
                 uint64_t time_u64 = 0;
-                uint8_t i = 0;
 
                 // se va citi timpul primit
                 while (BTSerial.available())
                 {
                     uint32_t value = (uint32_t)BTSerial.read();
-                    time_u64 |= value << i;
-                    i += 8;
+                    time_u64 <<= 8;
+                    time_u64 |= value & 255;
                 }
+                Serial.println((unsigned long)time_u64);
                 // se va salva timpul primit in log-ul curent
                 g_NodeManager.SetTime(time_u64);
             }
             else if (strcmp(textBuffer, SetSaveToLogTimeIntervalString) == 0)
             {
                 uint32_t interval_u32 = 0;
-                uint8_t i = 0;
 
                 // se va citi intervalul primit
                 while (BTSerial.available())
                 {
                     uint32_t value = (uint32_t)BTSerial.read();
-                    interval_u32 |= value << i;
-                    i += 8;
+                    interval_u32 <<= 8;
+                    interval_u32 |= value & 255;
                 }
                 // se va salva intervalul de salvare a datelor pe SD Card in log-ul curent
                 g_NodeManager.SetSaveToLogInterval(interval_u32);

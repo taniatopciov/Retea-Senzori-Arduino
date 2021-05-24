@@ -36,6 +36,7 @@ public:
     ~NodeManager();
 
     void Execute();
+    void Tick();
 
     void Start();
     void WakeUp();
@@ -66,6 +67,9 @@ private:
     ISensor *sensor2;
 
     uint16_t currentBatchLogIndex_u16;
+
+    uint64_t currentTimeElapsed_u64;
+    unsigned long lastMilliseconds;
 };
 
 extern NodeManager g_NodeManager;

@@ -16,12 +16,26 @@ NodeManager::NodeManager(ISensor *sensor1, ISensor *sensor2)
     this->sensor2 = sensor2;
 
     // se initializeaza valorile pentru configurarea nodului in cazul in care nu exista un fisier de configurare pentru a le suprascrie
-    configData_st.data.saveToLogIntervalInSeconds_u32 = 60;
+    configData_st.data.saveToLogIntervalInMillis_u32 = 10000;
     configData_st.data.lastBatchIndex_u16 = 0;
+
+    lastMilliseconds = 0;
+    currentTimeElapsed_u64 = 0;
 }
 
 NodeManager::~NodeManager()
 {
+}
+
+void NodeManager::Tick()
+{
+    Task::Tick();
+
+    unsigned long milliseconds = millis();
+
+    // calculate time elapsed
+    currentTimeElapsed_u64 += milliseconds - lastMilliseconds;
+    lastMilliseconds = milliseconds;
 }
 
 // aceasta functie se apeleaza periodic pentru a scrie informatiile de la senzori
@@ -32,10 +46,14 @@ void NodeManager::Execute()
     SensorLogData sensorData;
 
     g_NodeManager.ReadLiveSensorData(&sensorData, true);
+    sensorData.data.logType = LOG_DATA;
     AppendToLogFile(logFileName, &sensorData);
 
     g_NodeManager.ReadLiveSensorData(&sensorData, false);
+    sensorData.data.logType = LOG_DATA;
     AppendToLogFile(logFileName, &sensorData);
+
+    Serial.println("Values Stored");
 }
 
 void NodeManager::Start()
@@ -79,7 +97,7 @@ void NodeManager::Start()
 
         // dupa ce s-au citit informatiile din fiserul de configurare
         // se seteaza periodicitate de citire si salvare a datelor in log
-        SetIntervalTime(configData_st.data.saveToLogIntervalInSeconds_u32);
+        SetIntervalTime(configData_st.data.saveToLogIntervalInMillis_u32);
 
         // se creeaza un log-ul curent
         char logFileName[25] = "";
@@ -142,13 +160,16 @@ void NodeManager::SetTime(uint64_t time_u64) // timpul este UNIX Time
     logData.data.time_u64 = time_u64;
 
     AppendToLogFile(logFileName, &logData);
+
+    // reset time elapsed because a timestamp was set
+    currentTimeElapsed_u64 = 0;
 }
 
 void NodeManager::SetSaveToLogInterval(uint32_t interval_u32)
 {
     // se seteaza cat de des sa se faca citirile de la senzori
-    configData_st.data.saveToLogIntervalInSeconds_u32 = interval_u32;
-    SetIntervalTime(configData_st.data.saveToLogIntervalInSeconds_u32);
+    configData_st.data.saveToLogIntervalInMillis_u32 = interval_u32;
+    SetIntervalTime(configData_st.data.saveToLogIntervalInMillis_u32);
     WriteConfigFile(); // se rescrie fisierul de configurare cu noile date
 }
 
@@ -311,9 +332,9 @@ void NodeManager::ReplayLogFile(char *logFileName)
 
 inline uint64_t NodeManager::CalculateCurrentTime()
 {
-    // se calculeaza numarul de secunde care au trecut de cand ruleaza nodul
-    unsigned long milliseconds = millis();
-    return milliseconds / 1000;
+    // se calculeaza numarul de secunde care au trecut de cand s-a scris ultima data timpul
+
+    return currentTimeElapsed_u64 / 1000;
 }
 
 void NodeManager::WriteConfigFile()

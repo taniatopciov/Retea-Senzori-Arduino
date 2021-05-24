@@ -14,14 +14,14 @@
 //SoilMoistureSensor soilMoistureSensor(A0);
 //SimpleTempSensor simpleTempSensor(A1);
 
-//RainSensor rainSensor(A0, 8);
-//GasSensor gasSensor(A1);
+RainSensor rainSensor(A0, 8);
+GasSensor gasSensor(A1);
 
-LightSensor lightSensor(A0);
-TempSensor tempSensor(4);
+// LightSensor lightSensor(A0);
+// TempSensor tempSensor(4);
 
 // se va crea controller-ul nodului cu senzorii corespunzatori
-NodeManager g_NodeManager(&lightSensor, &tempSensor);
+NodeManager g_NodeManager(&rainSensor, &gasSensor);
 SDCardManager g_SDCardManager;
 BTCommunicationProtocol g_BTCommunicationProtocol(3, 2);
 
