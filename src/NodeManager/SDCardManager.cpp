@@ -14,6 +14,7 @@ SDCardManager::~SDCardManager()
 
 bool SDCardManager::InitSDCard()
 {
+    // se verifica daca se poate accesa SD Card-ul
     if (!SD.begin(PIN_SD_CARD_CS, PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_SCK))
     {
         isConnected_b = false;
@@ -27,23 +28,28 @@ bool SDCardManager::InitSDCard()
 
 bool SDCardManager::OpenFile(char *filePath)
 {
+    // se verifica daca conexiunea cu SD Card-ul a reusit
     if (!isConnected_b)
     {
         return false;
     }
 
+    // se verifica daca exista fisierul pe SD Card
     if (!ExistsFile(filePath))
     {
         return false;
     }
 
+    // daca fisierul a fost deschis anterior, atunci se va deschide
     if (isFileOpened_b)
     {
         CloseFile();
     }
 
+    // se deschide fisierul de la calea filePath
     openedFile = SD.open(filePath);
 
+    // se verifica daca s-a putut deschide fisierul
     if (openedFile)
     {
         isFileOpened_b = true;
@@ -58,11 +64,13 @@ bool SDCardManager::OpenFile(char *filePath)
 
 bool SDCardManager::OpenFileForWrite(char *filePath, bool truncate)
 {
+    // se verifica daca conexiunea cu SD Card-ul a reusit
     if (!isConnected_b)
     {
         return false;
     }
 
+    // daca fisierul a fost deschis anterior, atunci se va deschide
     if (isFileOpened_b)
     {
         CloseFile();
@@ -74,8 +82,10 @@ bool SDCardManager::OpenFileForWrite(char *filePath, bool truncate)
         mode_u8 |= O_TRUNC;
     }
 
+    // se deschide fisierul de la calea filePath in modul de screier
     openedFile = SD.open(filePath, mode_u8);
 
+    // se verifica daca s-a putut deschide fisierul
     if (openedFile)
     {
         isFileOpened_b = true;
@@ -89,11 +99,14 @@ bool SDCardManager::OpenFileForWrite(char *filePath, bool truncate)
 
 bool SDCardManager::HasData()
 {
+    // se verifica daca fisierul desschis mai are date
     return isFileOpened_b && openedFile.available();
 }
 
 bool SDCardManager::CreateFile(char *filePath)
 {
+    // se creeaza un fisier la calea filePath
+    // daca crearea a fost cu succes, atunci fisierul va fi inchis
     File file = SD.open(filePath, FILE_WRITE);
     if (file)
     {
@@ -106,6 +119,7 @@ bool SDCardManager::CreateFile(char *filePath)
 
 bool SDCardManager::CreateFolder(char *folderPath)
 {
+    // se creeaza un folder la calea folderPath, daca acesta nu
     if (!SD.exists(folderPath))
     {
         if (!SD.mkdir(folderPath))
@@ -118,11 +132,13 @@ bool SDCardManager::CreateFolder(char *folderPath)
 
 bool SDCardManager::ExistsFile(char *filePath)
 {
+    // verifica daca exista un fisier pe SD Card la calea filePath
     return SD.exists(filePath);
 }
 
 void SDCardManager::CloseFile()
 {
+    // se inchide fisierul deschis
     if (isFileOpened_b)
     {
         openedFile.flush();
@@ -133,10 +149,12 @@ void SDCardManager::CloseFile()
 
 bool SDCardManager::WriteRawByte(char byte)
 {
+    // se verifica daca fisierul a fost deschis anterior
     if (!isFileOpened_b)
     {
         return false;
     }
+    // se scrie un octet in fisier
     openedFile.write(byte);
 
     return true;
@@ -144,10 +162,12 @@ bool SDCardManager::WriteRawByte(char byte)
 
 bool SDCardManager::WriteRawBytes(char *bytes, size_t size)
 {
+    // se verifica daca fisierul a fost deschis anterior
     if (!isFileOpened_b)
     {
         return false;
     }
+    // se scriu un sir de octeti in fisier
     openedFile.write(bytes, size);
 
     return true;
@@ -155,11 +175,13 @@ bool SDCardManager::WriteRawBytes(char *bytes, size_t size)
 
 bool SDCardManager::ReadRawBytes(char *bytes, size_t size)
 {
+    // se verifica daca fisierul a fost deschis anterior
     if (!isFileOpened_b)
     {
         return false;
     }
 
+    // se citesc un sir de octeti din fisier
     openedFile.readBytes(bytes, size);
 
     return true;
@@ -167,6 +189,8 @@ bool SDCardManager::ReadRawBytes(char *bytes, size_t size)
 
 void SDCardManager::CardInfo()
 {
+    // aceasta functie citeste informatiile despre card
+    // aceasta functie este folosita pentru debugging
     Sd2Card card;
     SdVolume volume;
     SdFile root;
@@ -243,6 +267,9 @@ void SDCardManager::CardInfo()
 
 void SDCardManager::ListFiles()
 {
+    // aceasta functie afiseaza structura de fisiere si directoare de pe SD Card
+    // aceasta functie este folosita pentru debugging
+
     if (!isConnected_b)
     {
         Serial.println("Disconnected");
@@ -258,6 +285,9 @@ void SDCardManager::ListFiles()
 
 void SDCardManager::DumpFile(char *filePath)
 {
+    // aceasta functie afiseaza continutul fisierului de la calea filePath
+    // aceasta functie este folosita pentru debugging
+
     if (!isConnected_b)
     {
         return;
@@ -285,6 +315,9 @@ void SDCardManager::DumpFile(char *filePath)
 
 void SDCardManager::PrintDirectory(File dir, int numTabs)
 {
+    // aceasta functie afiseaza fisierele dintr-un director
+    // aceasta functie este folosita pentru debugging
+
     while (true)
     {
         File entry = dir.openNextFile();

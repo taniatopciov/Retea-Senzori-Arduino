@@ -3,6 +3,11 @@
 
 #include <Arduino.h>
 
+/**
+ * Aceasta clasa este folosita pentru a executa o functie periodic
+ * Functia care trebuie implementata este Execute
+ * Functia SetIntervalTime seteaza periodicitatea de executie a functiei
+*/
 class Task
 {
 public:

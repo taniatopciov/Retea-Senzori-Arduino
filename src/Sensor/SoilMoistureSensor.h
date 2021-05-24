@@ -3,6 +3,9 @@
 
 #include "ISensor.h"
 
+/**
+ * Aceasta clasa este folosita pentru un senzor de Umiditate a solului
+*/
 class SoilMoistureSensor : public ISensor
 {
 public:

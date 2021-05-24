@@ -4,6 +4,12 @@
 #include <SPI.h>
 #include <SD.h>
 
+/**
+ * Aceasta clasa este un wrapper a bibliotecii SD.h
+ * Aceasta biblioteca implementeaza comunicatia cu SD Card-ul
+ * 
+ * Clasa SDCardManager ofera functii pentru simplificarea deschiderii, inchiderii, scrierii si citirii fisierelor de pe SD Card
+*/
 class SDCardManager
 {
 public:

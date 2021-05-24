@@ -2,7 +2,9 @@
 #define TEMP_SENSOR_H
 
 #include "ISensor.h"
-
+/**
+ * Aceasta clasa este folosita pentru un senzor de Temperatura DHT
+*/
 class TempSensor : public ISensor
 {
 public:
@@ -15,6 +17,5 @@ public:
 private:
     float backupTemp;
 };
-
 
 #endif // TEMP_SENSOR_H

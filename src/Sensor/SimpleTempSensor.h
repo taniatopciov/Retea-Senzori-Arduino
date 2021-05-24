@@ -3,6 +3,11 @@
 
 #include "ISensor.h"
 
+/**
+ * Aceasta clasa este folosita pentru un senzor de Temperatura
+ * Senzorul citeste temperatura relativa
+ * Mai jos este descris procesul de a converti de la temperatura relativa la cea absoluta
+*/
 class SimpleTempSensor : public ISensor
 {
 public:

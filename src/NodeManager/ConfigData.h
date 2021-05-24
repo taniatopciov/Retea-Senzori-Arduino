@@ -7,8 +7,8 @@ union ConfigData
 {
     struct Data
     {
-        uint32_t saveToLogIntervalInSeconds_u32;
-        uint16_t lastBatchIndex_u16;
+        uint32_t saveToLogIntervalInSeconds_u32; // cat de des sa fie salvate informatiile in SD Card
+        uint16_t lastBatchIndex_u16;             // folosit pentru a indica care este log-ul curent in care se salveaza informatiile
     } data;
     char rawBytes[sizeof(Data)];
 };

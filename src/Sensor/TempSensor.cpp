@@ -22,6 +22,10 @@ SensorTypes TempSensor::GetType()
     return TEMP_SENSOR;
 }
 
+// se citeste temperatura folosind biblioteca DHT
+// unele citiri pot sa produca valoare NaN
+// pentru a evita transmiterea valorilor eronate, se salveaza ultima valoare corecta
+// In cazul citirii valorii eronate, se va returna valoarea corecta salvata anterior
 float TempSensor::ReadValue()
 {
     dht.begin();
@@ -36,5 +40,4 @@ float TempSensor::ReadValue()
     {
         return backupTemp;
     }
-    //Serial.println(event.temperature);
 }

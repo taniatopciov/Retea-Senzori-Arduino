@@ -13,15 +13,16 @@ enum LogType : char
     LOG_LIVE_DATA,
 };
 
+// o inregistrare ce se va scrie in log
 union SensorLogData
 {
     struct Data
     {
-        LogType logType;
-        SensorTypes sensorType_en;
-        uint16_t batchIndex_u16;
-        float sensorValue;
-        uint64_t time_u64;
+        LogType logType;           // tipul inregistrarii
+        SensorTypes sensorType_en; // tipul senzorului
+        uint16_t batchIndex_u16;   // index-u log-ului
+        float sensorValue;         // valoare citita de senzor
+        uint64_t time_u64;         // timpul la care a fost facuta citirea
     } data;
     char rawBytes[sizeof(Data)];
 };

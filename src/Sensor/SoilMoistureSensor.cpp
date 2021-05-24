@@ -13,6 +13,7 @@ SensorTypes SoilMoistureSensor::GetType()
     return SOIL_MOISTURE_SENSOR;
 }
 
+// se fac mai multe citiri si se va returna media acestora
 float SoilMoistureSensor::ReadValue()
 {
     float result = 0;

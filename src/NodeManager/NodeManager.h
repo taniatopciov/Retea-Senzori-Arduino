@@ -9,6 +9,26 @@
 #include "Sensor/ISensor.h"
 #include "Sensor/SensorTypes.h"
 
+/**
+ * Aceasta clasa este folosita pentru a controla functionalitatea nodului 
+ * 
+ * Exista functii pentru a economisi bateria WakeUp si GoToSleep
+ * 
+ * Exista functii
+ * - pentru a seta timpul in log-ul curent
+ * - pentru a seta cat de des se salveaza informatiile pe SD Card
+ * - pentru a determina numarul de senzori si tipul lor
+ * 
+ * Salvarea datelor
+ * Senzorii citesc valori care vor fi salvate intr-un fisier, denumit "log"
+ * Dupa ce se porneste alimentarea, se va scrie in log-ul trecut un mesaj ca "log-ul a fost incheiat"
+ * si se va crea un alt log, care va deveni log-ul curent in care vor fi salvate informatiile de la senzori
+ * 
+ * Citirea datelor
+ * Clasa ofera atat posibilitatea de citire a log-ului curent, cat si a tuturor log-urilor salvate pe SD Card
+ * Clasa ofera si citirea valorile citite de la senzori
+*/
+
 class NodeManager : public Task
 {
 public:

@@ -20,6 +20,7 @@
 LightSensor lightSensor(A0);
 TempSensor tempSensor(4);
 
+// se va crea controller-ul nodului cu senzorii corespunzatori
 NodeManager g_NodeManager(&lightSensor, &tempSensor);
 SDCardManager g_SDCardManager;
 BTCommunicationProtocol g_BTCommunicationProtocol(3, 2);
@@ -27,13 +28,15 @@ BTCommunicationProtocol g_BTCommunicationProtocol(3, 2);
 void setup()
 {
 	Serial.begin(9600);
-	g_BTCommunicationProtocol.Begin(9600);
 
+	// se va initializa protocolul de Bluetooth si clasa care controleaza nodul
+	g_BTCommunicationProtocol.Begin(9600);
 	g_NodeManager.Start();
 }
 
 void loop()
 {
+	// pentru a rula atat state machine-ul protocolului, cat si task-ul pentru scrierea periodica a informatiilor de la senzori
 	g_NodeManager.Tick();
 	g_BTCommunicationProtocol.Tick();
 }

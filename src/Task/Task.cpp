@@ -8,6 +8,7 @@ Task::~Task()
 {
 }
 
+// se verifica numarul de milisecunde care au trecut, iar daca diferenta este mai mare decat perioada, atunci se va executa functia
 void Task::Tick()
 {
     milliseconds_u64 = millis();
@@ -18,6 +19,7 @@ void Task::Tick()
     }
 }
 
+// reseteaza numaratoarea
 void Task::ResetTaskCounter()
 {
     elapsedTime_u64 = milliseconds_u64;

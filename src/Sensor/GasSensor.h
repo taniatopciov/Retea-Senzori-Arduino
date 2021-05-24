@@ -3,6 +3,9 @@
 
 #include "ISensor.h"
 
+/**
+ * Aceasta clasa este folosita pentru un senzor de Gaz
+*/
 class GasSensor : public ISensor
 {
 public:
