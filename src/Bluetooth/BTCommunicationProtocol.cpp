@@ -95,7 +95,7 @@ void BTCommunicationProtocol::StateMachineRun()
         {
             textBuffer[currentTextBufferIndex] = '\0';
             currentTextBufferIndex = 0;
-
+            Serial.println(textBuffer);
             if (strcmp(textBuffer, ConnectString) == 0)
             {
                 g_NodeManager.WakeUp();

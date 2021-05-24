@@ -4,7 +4,7 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-#define DHTPIN 2
+#define DHTPIN 4
 #define DHTTYPE DHT11
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
@@ -26,7 +26,15 @@ float TempSensor::ReadValue()
 {
     dht.begin();
     sensors_event_t event;
-    dht.humidity().getEvent(&event);
-    // if (event.temperature > 0 && event.temperature < 50)
-    return event.temperature;
+    dht.temperature().getEvent(&event);
+    if (!isnan(event.temperature))
+    {
+        backupTemp = event.temperature;
+        return event.temperature;
+    }
+    else
+    {
+        return backupTemp;
+    }
+    //Serial.println(event.temperature);
 }
