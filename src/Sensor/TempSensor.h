@@ -11,6 +11,10 @@ public:
     float ReadValue();
 
     SensorTypes GetType();
+
+private:
+    float backupTemp;
 };
+
 
 #endif // TEMP_SENSOR_H
